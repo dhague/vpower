@@ -9,7 +9,7 @@ from PowerMeterTx import PowerMeterTx
 from SpeedCadenceSensorRx import SpeedCadenceSensorRx
 from config import *
 
-stick = driver.USB2Driver(SERIAL, log=LOG, debug=DEBUG)
+stick = driver.USB2Driver(None, log=LOG, debug=DEBUG)
 antnode = node.Node(stick)
 print "Starting ANT node"
 antnode.start()
@@ -19,41 +19,65 @@ antnode.setNetworkKey(0, key)
 print "Starting speed sensor"
 try:
     # Create the speed sensor object and open it
-    scSensor = SpeedCadenceSensorRx(antnode)
-    scSensor.open()
+    speed_sensor = SpeedCadenceSensorRx(antnode)
+    speed_sensor.open()
 except Exception as e:
-    print("scSensor error: "+e.getMessage())
-    scSensor = None
+    print"speed_sensor  error: " + e.message
+    speed_sensor = None
 
-powerCalculator = BtAtsPowerCalculator()
+power_calculator = BtAtsPowerCalculator()
+
+print "Check for temperature/pressure/humidity sensor"
+try:
+    import bme280
+
+    temperature, pressure, humidity = bme280.readBME280All()
+    print "Temp (C): " + repr(temperature)
+    print "Pressure: " + repr(pressure)
+    print "Humidity: " + repr(humidity)
+    print "Air density: " + repr(power_calculator.calc_air_density(temperature, pressure, humidity))
+    dynamic_air_density = True
+except (ImportError, IOError) as e:
+    dynamic_air_density = False
+    print "Not found - assume air density of " + repr(AIR_DENSITY) + " kg/m3"
+    power_calculator.air_density = AIR_DENSITY
+
 # Notify the power calculator every time we get a speed event
-scSensor.notify_change(powerCalculator)
+speed_sensor.notify_change(power_calculator)
+
 print "Starting power meter"
 try:
     # Create the power meter object and open it
-    powerMeter = PowerMeterTx(antnode)
-    powerMeter.open()
+    power_meter = PowerMeterTx(antnode)
+    power_meter.open()
 except Exception as e:
-    print("powerMeter error: "+e.getMessage())
-    powerMeter = None
+    print "power_meter error: " + e.message
+    power_meter = None
 
 # Notify the power meter every time we get a calculated power value
-powerCalculator.notify_change(powerMeter)
+power_calculator.notify_change(power_meter)
 
 print "Main wait loop"
 while True:
     try:
-        time.sleep(1)
+        if dynamic_air_density:
+            temperature, pressure, humidity = bme280.readBME280All()
+            if DEBUG:
+                print "Temp (C): " + repr(temperature)
+                print "Pressure: " + repr(pressure)
+                print "Humidity: " + repr(humidity)
+            power_calculator.update_air_density(temperature, pressure, humidity)
+        time.sleep(AIR_DENSITY_UPDATE_SECS)
     except (KeyboardInterrupt, SystemExit):
         break
 
-if scSensor:
+if speed_sensor:
     print "Closing speed sensor"
-    scSensor.close()
-    scSensor.unassign()
-if powerMeter:
+    speed_sensor.close()
+    speed_sensor.unassign()
+if power_meter:
     print "Closing power meter"
-    powerMeter.close()
-    powerMeter.unassign()
+    power_meter.close()
+    power_meter.unassign()
 print "Stopping ANT node"
 antnode.stop()

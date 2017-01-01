@@ -1,5 +1,7 @@
+import sys
 from ant.core import message
 from ant.core.constants import *
+from ant.core.exceptions import ChannelError
 
 from constants import *
 from config import POWER_SENSOR_ID, DEBUG
@@ -18,13 +20,17 @@ class PowerMeterTx(object):
 
     def __init__(self, antnode):
         self.antnode = antnode
+
         # Get the channel
         self.channel = antnode.getFreeChannel()
-        self.channel.name = 'C:POWER'
-        self.channel.assign('N:ANT+', CHANNEL_TYPE_TWOWAY_TRANSMIT)
-        self.channel.setID(POWER_DEVICE_TYPE, POWER_SENSOR_ID, 0)
-        self.channel.setPeriod(8182)
-        self.channel.setFrequency(57)
+        try:
+            self.channel.name = 'C:POWER'
+            self.channel.assign('N:ANT+', CHANNEL_TYPE_TWOWAY_TRANSMIT)
+            self.channel.setID(POWER_DEVICE_TYPE, POWER_SENSOR_ID, 0)
+            self.channel.setPeriod(8182)
+            self.channel.setFrequency(57)
+        except ChannelError as e:
+            print "Channel config error: "+e.message
         self.powerData = PowerMeterTx.PowerData()
 
     def open(self):
@@ -56,5 +62,7 @@ class PowerMeterTx(object):
         payload += chr(self.powerData.instantaneousPower >> 8)
 
         ant_msg = message.ChannelBroadcastDataMessage(self.channel.number, data=payload)
+        sys.stdout.write('+')
+        sys.stdout.flush()
         if DEBUG: print 'Write message to ANT stick on channel ' + repr(self.channel.number)
         self.antnode.driver.write(ant_msg.encode())

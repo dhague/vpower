@@ -13,7 +13,10 @@ SPEED_SENSOR_ID = 24090
 # Current air density
 AIR_DENSITY = 1.191
 
-# Overall correction factor, to match a user's power meter on another bike
+# How often (secs) to update the air density if there is a BME280 present
+AIR_DENSITY_UPDATE_SECS = 10
+
+# Overall correction factor, e.g. to match a user's power meter on another bike
 CORRECTION_FACTOR = 0.96
 
 # ANT+ ID of the virtual power sensor
@@ -22,15 +25,11 @@ POWER_SENSOR_ID = int(int(hashlib.md5(getserial()).hexdigest(),16)&0xfffe)+1
 #POWER_SENSOR_ID = 22222
 print "Power meter ANT+ ID: "+repr(POWER_SENSOR_ID)
 
-# USB1 ANT stick interface. Running `dmesg | tail -n 25` after plugging the
-# stick on a USB port should tell you the exact interface.
-SERIAL = '/dev/ttyUSB0'
-
 # If set to True, the stick's driver will dump everything it reads/writes
 # from/to the stick.
 # Some demos depend on this setting being True, so unless you know what you
 # are doing, leave it as is.
-DEBUG = True
+DEBUG = False
 
 # Set to None to disable logging
 LOG = None
