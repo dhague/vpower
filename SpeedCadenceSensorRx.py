@@ -2,16 +2,15 @@ from ant.core import event
 from ant.core import message
 from ant.core.constants import *
 
-from config import SENSOR_TYPE, SENSOR_ID, LOG, DEBUG
-from constants import SPEED_CADENCE_DEVICE_TYPE, SPEED_DEVICE_TYPE, CADENCE_DEVICE_TYPE
+from constants import *
+from config import SENSOR_TYPE, SPEED_SENSOR_ID, DEBUG
 
 
-class SpeedCadenceSensor(event.EventCallback):
+# Receiver for Speed and/or Cadence ANT+ sensor
+class SpeedCadenceSensorRx(event.EventCallback):
     def __init__(self, antnode):
-        self.chanAssign = None
         self.currentData = None
         self.previousData = None
-        self.deviceCfg = None
         self.revsPerSec = 0.0
         self.observer = None
 
@@ -19,7 +18,7 @@ class SpeedCadenceSensor(event.EventCallback):
         self.channel = antnode.getFreeChannel()
         self.channel.name = 'C:SPEED'
         self.channel.assign('N:ANT+', CHANNEL_TYPE_TWOWAY_RECEIVE)
-        self.channel.setID(SENSOR_TYPE, SENSOR_ID, 1)
+        self.channel.setID(SENSOR_TYPE, SPEED_SENSOR_ID, 1)
         self.channel.setSearchTimeout(TIMEOUT_NEVER)
         if SENSOR_TYPE == SPEED_DEVICE_TYPE:
             period = 8118
@@ -39,9 +38,8 @@ class SpeedCadenceSensor(event.EventCallback):
         self.observer = observer
 
     def open(self):
-        # Open the channel
         self.channel.open()
-        self.channel.registerCallback(self)  # -> will callback process() method below
+        self.channel.registerCallback(self)  # -> will callback process(msg) method below
 
     def close(self):
         self.channel.close()
@@ -69,11 +67,11 @@ class SpeedCadenceSensor(event.EventCallback):
             if dp is None:
                 return
 
+            # Parse the incoming message into a SpeedCadenceData object
             message_data = SpeedCadenceData()
             dp.parse(msg.getPayload(), message_data)
 
-            if DEBUG:
-                message_data.print_speed()
+            if DEBUG: message_data.print_speed()
 
             if self.currentData is None:
                 self.previousData = self.currentData
