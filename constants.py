@@ -3,6 +3,7 @@ CADENCE_DEVICE_TYPE = 0x7A
 SPEED_CADENCE_DEVICE_TYPE = 0x79
 POWER_DEVICE_TYPE = 0x0B
 
+
 # Get the serial number of Raspberry Pi
 def getserial():
     # Extract serial from cpuinfo file

@@ -1,11 +1,17 @@
 # ANT+ Virtual Power Meter
 
-## Introduction
+## Overview
 
 This project implements "virtual power" for bicycle turbo trainers where the trainer or the attached bike has an ANT+ 
 speed sensor. The calculated power is broadcasted as such on ANT+ so that any head unit or app will see it as a power
- meter.
+meter. Currently supported trainers are the 
+[Bike Technologies Advanced Training System (BT-ATS)](http://www.biketechnologies.com/bt-advanced-training-system/) 
+and the [Kurt Kinetic range of fluid trainers](https://kurtkinetic.com/products/trainers/). 
+
+It is easy to add a new trainer - just subclass `AbstractPowerCalculator` and implement the method `power_from_speed(revs_per_sec)`.
+If your trainer is not there, please add it and submit a pull request.
  
+## Introduction
 Many turbos, such as the Kurt Kinetic or Bike Technologies Advanced Training System (BT-ATS) have well-known and 
 consistent power curves which make it possible to calculate the power from speed.
 This concept is used in several applications (Zwift, Golden Cheetah, TrainerRoad, Sufferfest) to allow the user to 
@@ -18,10 +24,10 @@ the BT-ATS). Even when a turbo is supported, the calculated power may differ fro
 
 This project is designed to be run on a Raspberry Pi with an ANT+ stick plugged in, and will broadcast the calculated 
 power over ANT+ so that bike computers and apps will see it as a regular ANT+ power meter. The project is designed to be
-open-source and highly configurable - for example, the BT-ATS which (first turbo supported by the project) not only 
-allows for a correction factor so that it matches, say, a power2max on another bike, but also it can read from a cheap
-weather sensor and correct for air density. With these corrections, the calculated power is within 1 watt of a power2max 
-power meter for durations of 10 seconds or more.
+open-source and highly configurable - for example, the BT-ATS not only allows for a correction factor so that it 
+matches, say, a power2max on another bike, but also it can read from a cheap weather sensor and correct for air density.
+With these corrections, the calculated power is within 1 watt of a power2max power meter for durations of 10 seconds 
+or more.
 
 If you're not bothered about the air density correction then you don't even need a Raspberry Pi - any computer running
 Linux will do (even a virtual machine running in Windows is fine) - all you need is a dedicated ANT+ USB stick.
@@ -63,10 +69,10 @@ Anyway, under $60 isn't too bad for an ANT+ power meter :-)
 
     `cd vpower`
  
-    `pip install -r requirements.txt`
+    `sudo pip install -r requirements.txt`
 
 4. Edit config values in `config.py` - typically you'll set `SPEED_SENSOR_ID` to the ANT+ ID of your speed sensor 
-and `SENSOR_TYPE` to your type of sensor.
+and `SENSOR_TYPE` to your type of sensor. If using a wheel-driven trainer you will want to set the wheel circumference.
 Set `CORRECTION_FACTOR` to 1.0 to begin with - you can adjust it later according to your own comparative tests or perceived 
 exertion.
 
@@ -98,15 +104,14 @@ You should see something like this:
     Power meter ANT+ ID: 37127
     Starting ANT node
     Starting speed sensor
-    Check for temperature/pressure/humidity sensor
-    Not found - assume air density of 1.191 kg/m3
+    Using KurtKineticPowerCalculator
     Starting power meter
     Main wait loop
     +++++
 
 Each `+` corresponds to a power message being sent, so these will only appear once you start pedalling.
-A `o` will occasionally appear when the air density is updated.
-If you have a BME280 sensor attached then you will also see some data on temperature, pressure, humidity and air density.
+If you have a BME280 sensor attached then you will also see some data on temperature, pressure, humidity and air density
+and a `o` will occasionally appear when the air density is updated.
 
 To stop the power meter running, just do `CTRL-C` and after a few seconds everything will be shut down and you can 
 unplug the Pi.
