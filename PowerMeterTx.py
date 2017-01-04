@@ -4,7 +4,7 @@ from ant.core.constants import *
 from ant.core.exceptions import ChannelError
 
 from constants import *
-from config import POWER_SENSOR_ID, DEBUG
+from config import DEBUG
 
 CHANNEL_PERIOD = 8182
 
@@ -18,7 +18,7 @@ class PowerMeterTx(object):
             self.cumulativePower = 0
             self.instantaneousPower = 0
 
-    def __init__(self, antnode):
+    def __init__(self, antnode, sensor_id):
         self.antnode = antnode
 
         # Get the channel
@@ -26,7 +26,7 @@ class PowerMeterTx(object):
         try:
             self.channel.name = 'C:POWER'
             self.channel.assign('N:ANT+', CHANNEL_TYPE_TWOWAY_TRANSMIT)
-            self.channel.setID(POWER_DEVICE_TYPE, POWER_SENSOR_ID, 0)
+            self.channel.setID(POWER_DEVICE_TYPE, sensor_id, 0)
             self.channel.setPeriod(8182)
             self.channel.setFrequency(57)
         except ChannelError as e:

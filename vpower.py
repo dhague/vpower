@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import time
 
 from ant.core import driver
@@ -5,9 +6,11 @@ from ant.core import node
 
 from PowerMeterTx import PowerMeterTx
 from SpeedCadenceSensorRx import SpeedCadenceSensorRx
-from config import DEBUG, LOG, NETKEY, POWER_CALCULATOR
+from config import DEBUG, LOG, NETKEY, POWER_CALCULATOR, POWER_SENSOR_ID, SENSOR_TYPE, SPEED_SENSOR_ID
 
 try:
+    print "Using " + POWER_CALCULATOR.__class__.__name__
+
     stick = driver.USB2Driver(None, log=LOG, debug=DEBUG)
     antnode = node.Node(stick)
     print "Starting ANT node"
@@ -18,20 +21,18 @@ try:
     print "Starting speed sensor"
     try:
         # Create the speed sensor object and open it
-        speed_sensor = SpeedCadenceSensorRx(antnode)
+        speed_sensor = SpeedCadenceSensorRx(antnode, SENSOR_TYPE, SPEED_SENSOR_ID)
         speed_sensor.open()
+        # Notify the power calculator every time we get a speed event
+        speed_sensor.notify_change(POWER_CALCULATOR)
     except Exception as e:
         print"speed_sensor  error: " + e.message
         speed_sensor = None
 
-    # Notify the power calculator every time we get a speed event
-    print "Using " + POWER_CALCULATOR.__class__.__name__
-    speed_sensor.notify_change(POWER_CALCULATOR)
-
-    print "Starting power meter"
+    print "Starting power meter with ANT+ ID " + repr(POWER_SENSOR_ID)
     try:
         # Create the power meter object and open it
-        power_meter = PowerMeterTx(antnode)
+        power_meter = PowerMeterTx(antnode, POWER_SENSOR_ID)
         power_meter.open()
     except Exception as e:
         print "power_meter error: " + e.message

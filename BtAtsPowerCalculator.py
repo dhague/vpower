@@ -58,14 +58,14 @@ class BtAtsPowerCalculator(AbstractPowerCalculator):
 
         if self.DEBUG: print "air_density_correction: " + repr(self.air_density_correction)
         rs = revs_per_sec
-        power = self.air_density_correction * (self.A * rs * rs * rs +
-                                               self.B * rs * rs +
-                                               self.C * rs +
-                                               self.D)
+        power = self.correction_factor * (self.A * rs * rs * rs * self.air_density_correction +
+                                          self.B * rs * rs +
+                                          self.C * rs +
+                                          self.D)
         return power
 
     def update_air_density_correction(self):
-        self.air_density_correction = self.correction_factor * self.air_density / self.default_air_density
+        self.air_density_correction = self.air_density / self.default_air_density
 
     @staticmethod
     def calc_air_density(t, p, h):

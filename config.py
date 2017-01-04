@@ -13,8 +13,8 @@ SENSOR_TYPE = SPEED_CADENCE_DEVICE_TYPE
 SPEED_SENSOR_ID = 24090
 
 # Uncomment for the model of turbo you are using
-POWER_CALCULATOR = BtAtsPowerCalculator()
-# POWER_CALCULATOR = KurtKineticPowerCalculator()
+# POWER_CALCULATOR = BtAtsPowerCalculator()
+POWER_CALCULATOR = KurtKineticPowerCalculator()
 
 # For wind/air trainers, current air density in kg/m3 (if not using a BME280 weather sensor)
 #  Hint: there's an online calculator at http://barani.biz/apps/air-density/ to help you work it out,
@@ -35,7 +35,6 @@ POWER_CALCULATOR.set_correction_factor(1.0)
 # The expression below will choose a fixed ID based on the CPU's serial number
 POWER_SENSOR_ID = int(int(hashlib.md5(getserial()).hexdigest(), 16) & 0xfffe) + 1
 # POWER_SENSOR_ID = 22222
-print "Power meter ANT+ ID: " + repr(POWER_SENSOR_ID)
 
 # If set to True, the stick's driver will dump everything it reads/writes
 # from/to the stick.

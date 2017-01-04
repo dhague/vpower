@@ -3,12 +3,14 @@ from ant.core import message
 from ant.core.constants import *
 
 from constants import *
-from config import SENSOR_TYPE, SPEED_SENSOR_ID, DEBUG
+from config import DEBUG
 
 
 # Receiver for Speed and/or Cadence ANT+ sensor
 class SpeedCadenceSensorRx(event.EventCallback):
-    def __init__(self, antnode):
+    def __init__(self, antnode, sensor_type, sensor_id):
+        self.sensor_type = sensor_type
+        self.sensor_id = sensor_id
         self.currentData = None
         self.previousData = None
         self.revsPerSec = 0.0
@@ -18,13 +20,13 @@ class SpeedCadenceSensorRx(event.EventCallback):
         self.channel = antnode.getFreeChannel()
         self.channel.name = 'C:SPEED'
         self.channel.assign('N:ANT+', CHANNEL_TYPE_TWOWAY_RECEIVE)
-        self.channel.setID(SENSOR_TYPE, SPEED_SENSOR_ID, 1)
+        self.channel.setID(sensor_type, sensor_id, 1)
         self.channel.setSearchTimeout(TIMEOUT_NEVER)
-        if SENSOR_TYPE == SPEED_DEVICE_TYPE:
+        if sensor_type == SPEED_DEVICE_TYPE:
             period = 8118
-        elif SENSOR_TYPE == CADENCE_DEVICE_TYPE:
+        elif sensor_type == CADENCE_DEVICE_TYPE:
             period = 8102
-        elif SENSOR_TYPE == SPEED_CADENCE_DEVICE_TYPE:
+        elif sensor_type == SPEED_CADENCE_DEVICE_TYPE:
             period = 8086
         self.channel.setPeriod(period)
         self.channel.setFrequency(57)
@@ -58,11 +60,11 @@ class SpeedCadenceSensorRx(event.EventCallback):
         if isinstance(msg, message.ChannelBroadcastDataMessage):
             dp = None
             # Get the datapage according to the configured device type
-            if SENSOR_TYPE == SPEED_DEVICE_TYPE:
+            if self.sensor_type == SPEED_DEVICE_TYPE:
                 dp = SpeedDataPage()
-            elif SENSOR_TYPE == CADENCE_DEVICE_TYPE:
+            elif self.sensor_type == CADENCE_DEVICE_TYPE:
                 dp = CadenceDataPage()
-            elif SENSOR_TYPE == SPEED_CADENCE_DEVICE_TYPE:
+            elif self.sensor_type == SPEED_CADENCE_DEVICE_TYPE:
                 dp = SpeedCadenceDataPage()
             if dp is None:
                 return
