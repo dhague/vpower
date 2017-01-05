@@ -8,9 +8,11 @@ meter. Currently supported trainers are the
 [Bike Technologies Advanced Training System (BT-ATS)](http://www.biketechnologies.com/bt-advanced-training-system/) 
 and the [Kurt Kinetic range of fluid trainers](https://kurtkinetic.com/products/trainers/). 
 
+![vPower unit in action on a BT-ATS trainer](https://dl.dropboxusercontent.com/u/291298/vPower%20BT-ATS-small.JPG)
+
 It is easy to add a new trainer - just subclass `AbstractPowerCalculator` and implement the method `power_from_speed(revs_per_sec)`.
 If your trainer is not there, please add it and submit a pull request.
- 
+
 ## Introduction
 Many turbos, such as the Kurt Kinetic or Bike Technologies Advanced Training System (BT-ATS) have well-known and 
 consistent power curves which make it possible to calculate the power from speed.
