@@ -73,12 +73,16 @@ Anyway, under $60 isn't too bad for an ANT+ power meter :-)
  
     `sudo pip install -r requirements.txt`
 
-4. Edit config values in `config.py` - typically you'll set `SPEED_SENSOR_ID` to the ANT+ ID of your speed sensor 
-and `SENSOR_TYPE` to your type of sensor. If using a wheel-driven trainer you will want to set the wheel circumference.
-Set `CORRECTION_FACTOR` to 1.0 to begin with - you can adjust it later according to your own comparative tests or perceived 
+4. Edit config values in `vpower.cfg` - typically you'll set `speed_sensor_id` to the ANT+ ID of your speed sensor 
+and `speed_sensor_type` to your type of sensor. 
+Next, uncomment one of the `power_calculator` lines to tell *vpower* what type of turbo you are using.
+If using a wheel-driven trainer you will then want to set the `wheel circumference` value.
+If you have a wind trainer (i.e. the resistance comes purely from a fan in the air) then you will want to set the
+`air_density` value for better accuracy.
+Set `correction_factor` to 1.0 to begin with - you can adjust it later according to your own comparative tests or perceived 
 exertion.
 
-## [optional] Setting up air density correction
+## [optional] Setting up air density correction using a [BME280 sensor](https://www.google.co.uk/search?q=bme280+sensor)
 
 This is just a matter of downloading and setting up the BME280 Python module.
 
@@ -118,4 +122,4 @@ and a `o` will occasionally appear when the air density is updated.
 To stop the power meter running, just do `CTRL-C` and after a few seconds everything will be shut down and you can 
 unplug the Pi.
 
-You can turn on VPOWER_DEBUG/diagnostic output by setting `VPOWER_DEBUG` to `True` in `config.py`.
+You can turn on DEBUG/diagnostic output by setting `debug` to `True` in `vpower.cfg`.
