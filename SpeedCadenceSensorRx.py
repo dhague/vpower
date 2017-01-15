@@ -3,7 +3,7 @@ from ant.core import message
 from ant.core.constants import *
 
 from constants import *
-from config import DEBUG
+from config import VPOWER_DEBUG
 
 
 # Receiver for Speed and/or Cadence ANT+ sensor
@@ -73,7 +73,7 @@ class SpeedCadenceSensorRx(event.EventCallback):
             message_data = SpeedCadenceData()
             dp.parse(msg.getPayload(), message_data)
 
-            if DEBUG: message_data.print_speed()
+            if VPOWER_DEBUG: message_data.print_speed()
 
             if self.currentData is None:
                 self.previousData = self.currentData

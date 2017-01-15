@@ -41,7 +41,7 @@ class BtAtsPowerCalculator(AbstractPowerCalculator):
     #  Power = A * v ^ 3 + B * v ^ 2 + C * v + d
     # where v is speed in revs / sec and constants A, B, C & D are as defined above.
     def power_from_speed(self, revs_per_sec):
-        if self.DEBUG: print "power_from_speed"
+        if self._DEBUG: print "power_from_speed"
 
         if self.dynamic_air_density is None:
             self.check_for_bme280_sensor()
@@ -50,13 +50,13 @@ class BtAtsPowerCalculator(AbstractPowerCalculator):
             self.air_density_timer = time.time()
             import bme280
             temperature, pressure, humidity = bme280.readBME280All()
-            if self.DEBUG:
+            if self._DEBUG:
                 print "Temp (C): " + repr(temperature)
                 print "Pressure: " + repr(pressure)
                 print "Humidity: " + repr(humidity)
             self.update_air_density(temperature, pressure, humidity)
 
-        if self.DEBUG: print "air_density_correction: " + repr(self.air_density_correction)
+        if self._DEBUG: print "air_density_correction: " + repr(self.air_density_correction)
         rs = revs_per_sec
         power = self.correction_factor * (self.A * rs * rs * rs * self.air_density_correction +
                                           self.B * rs * rs +
@@ -69,28 +69,28 @@ class BtAtsPowerCalculator(AbstractPowerCalculator):
 
     @staticmethod
     def calc_air_density(t, p, h):
-        DEBUG = BtAtsPowerCalculator.DEBUG
-        if DEBUG: print "set_air_density(temp=" + repr(t) + ", press=" + repr(p) + ", humi=" + repr(h) + ")"
+        _DEBUG = BtAtsPowerCalculator._DEBUG
+        if _DEBUG: print "set_air_density(temp=" + repr(t) + ", press=" + repr(p) + ", humi=" + repr(h) + ")"
         Rd = 287.05  # Specific gas constant for dry air J / (KgK)
         Rv = 461.495  # Specific gas constant for water vapour J / (KgK)
         water_vapour_pressure = BtAtsPowerCalculator.saturation_pressure(t) * h / 100.0
-        if DEBUG: print("water_vapour_pressure: ", water_vapour_pressure)
+        if _DEBUG: print("water_vapour_pressure: ", water_vapour_pressure)
         dry_air_pressure = (p * 100.0) - water_vapour_pressure
-        if DEBUG: print("dry_air_pressure: ", dry_air_pressure)
+        if _DEBUG: print("dry_air_pressure: ", dry_air_pressure)
         temperatureK = t + 273.15
-        if DEBUG: print("temperatureK: ", temperatureK)
+        if _DEBUG: print("temperatureK: ", temperatureK)
         return (dry_air_pressure / (Rd * temperatureK)) + (water_vapour_pressure / (Rv * temperatureK))
 
     def update_air_density(self, t, p, h):
-        DEBUG = BtAtsPowerCalculator.DEBUG
         self.air_density = self.calc_air_density(t, p, h)
-        if DEBUG: print("air density: ", self.air_density)
+        if self._DEBUG: print("air density: ", self.air_density)
         self.update_air_density_correction()
         sys.stdout.write('o')
         sys.stdout.flush()
 
     @staticmethod
     def saturation_pressure(t):
+        # Estimation algorithm due to Herman Wobus (see https://wahiduddin.net/calc/density_altitude.htm)
         Eso = 6.1078 * 100  # * 100 for Pa instead of hPa
         c0 = 0.99999683
         c1 = -0.90826951e-2

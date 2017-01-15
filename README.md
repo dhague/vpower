@@ -118,4 +118,4 @@ and a `o` will occasionally appear when the air density is updated.
 To stop the power meter running, just do `CTRL-C` and after a few seconds everything will be shut down and you can 
 unplug the Pi.
 
-You can turn on debug/diagnostic output by setting `DEBUG` to `True` in `config.py`.
+You can turn on VPOWER_DEBUG/diagnostic output by setting `VPOWER_DEBUG` to `True` in `config.py`.

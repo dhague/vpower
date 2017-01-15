@@ -8,6 +8,10 @@ from PowerMeterTx import PowerMeterTx
 from SpeedCadenceSensorRx import SpeedCadenceSensorRx
 from config import DEBUG, LOG, NETKEY, POWER_CALCULATOR, POWER_SENSOR_ID, SENSOR_TYPE, SPEED_SENSOR_ID
 
+antnode = None
+speed_sensor = None
+power_meter = None
+
 try:
     print "Using " + POWER_CALCULATOR.__class__.__name__
 
@@ -48,6 +52,8 @@ try:
         except (KeyboardInterrupt, SystemExit):
             break
 
+except Exception as e:
+    print "Exception: "+repr(e)
 finally:
     if speed_sensor:
         print "Closing speed sensor"
@@ -57,5 +63,6 @@ finally:
         print "Closing power meter"
         power_meter.close()
         power_meter.unassign()
-    print "Stopping ANT node"
-    antnode.stop()
+    if antnode:
+        print "Stopping ANT node"
+        antnode.stop()

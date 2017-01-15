@@ -10,7 +10,7 @@ class AbstractPowerCalculator(object):
         self.observer = None  # callback method
         self.correction_factor = 1.0  # default value - can be overridden in config.py
 
-    DEBUG = False  # default value - can be overridden in config.py
+    _DEBUG = False  # default value - can be overridden in config.py
 
     def power_from_speed(self, revs_per_sec):
         raise NotImplemented  # This should be implemented in the subclass
@@ -23,7 +23,7 @@ class AbstractPowerCalculator(object):
 
     @staticmethod
     def set_debug(debug):
-        AbstractPowerCalculator.DEBUG = debug
+        AbstractPowerCalculator._DEBUG = debug
 
     def update(self, revs_per_sec):
         power = self.power_from_speed(revs_per_sec)
@@ -34,7 +34,7 @@ class AbstractPowerCalculator(object):
         # We just keep track of energy and time for now
         self.energy += delta_energy
         self.last_time = current_time
-        if self.DEBUG: print "cumulative_time(): " + repr(self.cumulative_time())
+        if self._DEBUG: print "cumulative_time(): " + repr(self.cumulative_time())
 
         # We only update the observer with a power reading up to twice a second, which is roughly
         # as often as a crank-based power meter
@@ -45,7 +45,7 @@ class AbstractPowerCalculator(object):
         return self.last_time - self.init_time
 
     def send_power(self):
-        if self.DEBUG: print "send_power"
+        if self._DEBUG: print "send_power"
         timeGap = self.cumulative_time()
         if timeGap == 0.0:
             return
@@ -59,6 +59,6 @@ class AbstractPowerCalculator(object):
         # Tell whoever is listening
         if self.observer:
             self.observer.update(avePower)
-            if self.DEBUG: print "Power: ", repr(avePower)
+            if self._DEBUG: print "Power: ", repr(avePower)
         else:
             print "Power: ", repr(avePower)
