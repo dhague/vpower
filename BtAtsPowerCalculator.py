@@ -19,6 +19,9 @@ class BtAtsPowerCalculator(AbstractPowerCalculator):
     def check_for_bme280_sensor(self):
         print "Check for temperature/pressure/humidity sensor"
         try:
+            import os, sys
+            sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            # import ../bme280.py
             import bme280
             bme280.readBME280All()  # The first reading after boot-up can be off, so throw it away
             temperature, pressure, humidity = bme280.readBME280All()

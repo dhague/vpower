@@ -1,5 +1,6 @@
 from ConfigParser import ConfigParser
 
+import sys
 from ant.core import log
 from BtAtsPowerCalculator import BtAtsPowerCalculator
 from KurtKineticPowerCalculator import KurtKineticPowerCalculator
@@ -9,7 +10,11 @@ import hashlib
 VPOWER_DEBUG = True
 
 CONFIG = ConfigParser()
-_CONFIG_FILENAME = 'vpower.cfg' # TODO: implement command-line option override
+_CONFIG_FILENAME = 'vpower.cfg'
+# If there's a command-line argument, it's the location of the config file
+if len(sys.argv) > 1:
+    _CONFIG_FILENAME = sys.argv[1]
+
 SECTION = 'vpower'
 
 try:
