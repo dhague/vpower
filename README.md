@@ -65,16 +65,21 @@ Anyway, under $60 isn't too bad for an ANT+ power meter :-)
 2. Run `sudo raspi-config` and tell the Pi to boot to console only (to save memory)
  and enable I2C in "Interfacing options" if you plan to use a BME280 sensor for air density correction.
 
-3. Clone this repo and install the required Python libraries:
-
-    `git clone https://github.com/dhague/vpower.git`
-
-    `cd vpower`
+3. You can clone the repo on the Pi itself (3a), or simply download the zip file and extract it to the microSD
+ card from a PC (3b).  
  
-    `sudo pip install -r requirements.txt`
+3a. Clone this repo and install the required Python libraries:
 
-4. Edit config values in `vpower.cfg` - typically you'll set `speed_sensor_id` to the ANT+ ID of your speed sensor 
-and `speed_sensor_type` to your type of sensor. 
+    cd /boot
+    sudo git clone https://github.com/dhague/vpower.git
+    cd vpower
+    sudo pip install -r requirements.txt
+
+3b. Download the zip file from the "Clone or download" button above and extract it to the microSD card so that the `vpower` folder
+    contains the files from the repo.
+
+4. Copy `vpower.cfg` to its parent folder (e.g. `/boot`) and then edit the values inside - typically you'll set
+`speed_sensor_id` to the ANT+ ID of your speed sensor and `speed_sensor_type` to your type of sensor. 
 Next, uncomment one of the `power_calculator` lines to tell *vpower* what type of turbo you are using.
 If using a wheel-driven trainer you will then want to set the `wheel circumference` value.
 If you have a wind trainer (i.e. the resistance comes purely from a fan in the air) then you will want to set the
@@ -86,24 +91,28 @@ exertion.
 
 This is just a matter of downloading and setting up the BME280 Python module.
 
-1. From the vpower folder, run:
+1. From the *parent* of the vpower folder (e.g. `/boot`), run:
 
     `wget https://bitbucket.org/MattHawkinsUK/rpispy-misc/raw/master/python/bme280.py`
 
-2. Run `sudo i2cdetect -y 1`
+Alternatively (if using option 3b above), download the file from 
+[here](https://bitbucket.org/MattHawkinsUK/rpispy-misc/raw/master/python/bme280.py) 
+and put it in the root of the microSD card.
+
+2. On the Pi, run `sudo i2cdetect -y 1`
 
     if 77 is shown in the output grid, then edit `bme280.py` and change `0x76` to `0x77`
     (at line 27 or thereabouts)
 
 3. Running `python bme280.py` should output the chip's data and the current temperature, pressure & humidity
 
-## Running the virtual power meter
+## Running the virtual power meter (manual)
 
 1. Log into the Pi
 
-2. `cd vpower`
+2. `cd /boot/vpower`
 
-3. `sudo python vpower.py`
+3. `sudo python vpower.py ../vpower.cfg`
 
 You should see something like this:
 
@@ -123,3 +132,13 @@ To stop the power meter running, just do `CTRL-C` and after a few seconds everyt
 unplug the Pi.
 
 You can turn on DEBUG/diagnostic output by setting `debug` to `True` in `vpower.cfg`.
+
+## Installing the virtual power meter as a service which starts automatically
+
+1. From the `init.d` folder of the repo, copy the `vpower` file to `/etc/init.d`, e.g.
+
+    `sudo cp /boot/vpower/init.d/vpower /etc/init.d`
+
+2. Configure the service to start at boot time:
+
+    `sudo update-rc.d vpower defaults`
