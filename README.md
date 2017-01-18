@@ -8,7 +8,7 @@ meter. Currently supported trainers are the
 [Bike Technologies Advanced Training System (BT-ATS)](http://www.biketechnologies.com/bt-advanced-training-system/) 
 and the [Kurt Kinetic range of fluid trainers](https://kurtkinetic.com/products/trainers/). 
 
-![vPower unit in action on a BT-ATS trainer](https://dl.dropboxusercontent.com/u/291298/vPower%20BT-ATS-small.JPG)
+![Prototype vPower unit in action on a BT-ATS trainer](https://dl.dropboxusercontent.com/u/291298/vPower%20BT-ATS-small.JPG)
 
 It is easy to add a new trainer - just subclass `AbstractPowerCalculator` and implement the method `power_from_speed(revs_per_sec)`.
 If your trainer is not there, please add it and submit a pull request.
@@ -31,6 +31,8 @@ matches, say, a power2max on another bike, but also it can read from a cheap wea
 With these corrections, the calculated power is within 1 watt of a power2max power meter for durations of 10 seconds 
 or more.
 
+![vPower unit with air density sensor](https://dl.dropboxusercontent.com/u/291298/vPowerPiZeroCase.JPG)
+
 If you're not bothered about the air density correction then you don't even need a Raspberry Pi - any computer running
 Linux will do (even a virtual machine running in Windows is fine) - all you need is a dedicated ANT+ USB stick.
 
@@ -45,18 +47,22 @@ This project can be built very cheaply. A sample bill of materials is as follows
 
 | Item | Price |
 |------|-------|
-| Raspberry Pi Zero: | $5 |
-| microSD card with Raspbian: | $8 |
-| Pi Zero USB hub: | $8 |
-| micro-USB cable (for power): | $5 |
-| ANT+ USB Stick: | $20 |
-| USB ethernet/wifi adapter: | $9 |
-| BME280 temperature/pressure/humidity sensor: | $5 |
+| [Raspberry Pi Zero](http://www.ebay.com/itm/Raspberry-Pi-Zero-Camera-Version-/282327834340): | $8 |
+| [microSD card with Raspbian](https://www.adafruit.com/products/2767): | $10 |
+| [micro-USB power supply](http://www.ebay.com/itm/5V-2A-Micro-USB-Charger-Adapter-Cable-Power-Supply-for-Raspberry-Pi-B-B-KG-/172381007502): | $2 |
+| [ANT+ USB Stick](http://www.ebay.com/itm/Mini-Dongle-USB-Stick-Adapter-For-ANT-Portable-Carry-For-Garmin-310XT-405-JL-/112226382423): | $12 |
+| [USB OTG adapter](http://www.ebay.com/itm/3PCs-Mini-USB-2-0-Micro-USB-OTG-Converter-Adapter-For-Samsung-Android-Cellphone-/351814299375) | $2 |
+| [Case for Pi Zero](https://www.adafruit.com/product/3005) | $6 |
+| **Basic unit cost:** | **$38** |
+| *For air-resistance trainers only:* |
+| [BME280 temperature/pressure/humidity sensor](http://www.ebay.com/itm/1PCS-Breakout-Temperature-Humidity-Barometric-Pressure-BME280-Digital-Sensor-/182330722814): | $5 |
+| [2x20 pin header](https://www.adafruit.com/products/2822) | $1 |
+| [Jumper cables](http://www.ebay.com/itm/40pcs-10cm-1P-Female-jumper-wire-Dupont-cable-F-Arduino-UNO-R3-Raspberry-Pi-/281588416878) | $1 |
+| *For development only:* |
+| [USB hub / ethernet adapter](https://www.adafruit.com/products/2992) (for development only): | $15 |
 
-So $60 in total, of which the $9 network adapter is only used for setting up the device; the $5 BME280 is only useful
-for wind-resistance trainers like the BT-ATS and Lemond Revolution - you could just get a $5 case instead.
-
-Anyway, under $60 isn't too bad for an ANT+ power meter :-)
+So around $40 for a functioning ANT+ power meter (a little more with the air density sensor),
+and under $15 for the USB hub/ethernet adaptor to be able to build it :-)
 
 ## Setting up the software
 
