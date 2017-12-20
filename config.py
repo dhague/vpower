@@ -4,6 +4,7 @@ import sys
 from ant.core import log
 from BtAtsPowerCalculator import BtAtsPowerCalculator
 from KurtKineticPowerCalculator import KurtKineticPowerCalculator
+from TacxBlueMotionPowerCalculator import TacxBlueMotionPowerCalculator
 from constants import *
 import hashlib
 
