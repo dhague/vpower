@@ -8,7 +8,7 @@ meter. Currently supported trainers are the
 [Bike Technologies Advanced Training System (BT-ATS)](http://www.biketechnologies.com/bt-advanced-training-system/) 
 and the [Kurt Kinetic range of fluid trainers](https://kurtkinetic.com/products/trainers/). 
 
-![Prototype vPower unit in action on a BT-ATS trainer](https://dl.dropboxusercontent.com/u/291298/vPower%20BT-ATS-small.JPG)
+![Prototype vPower unit in action on a BT-ATS trainer](https://github.com/dhague/vpower/raw/master/images/vPower%20BT-ATS-small.JPG)
 
 It is easy to add a new trainer - just subclass `AbstractPowerCalculator` and implement the method `power_from_speed(revs_per_sec)`.
 If your trainer is not there, please add it and submit a pull request.
@@ -31,7 +31,7 @@ matches, say, a power2max on another bike, but also it can read from a cheap wea
 With these corrections, the calculated power is within 1 watt of a power2max power meter for durations of 10 seconds 
 or more.
 
-![vPower unit with air density sensor](https://dl.dropboxusercontent.com/u/291298/vPowerPiZeroCase.JPG)
+![vPower unit with air density sensor](https://github.com/dhague/vpower/raw/master/images/vPowerPiZeroCase.JPG)
 
 If you're not bothered about the air density correction then you don't even need a Raspberry Pi - any computer running
 Linux will do (even a virtual machine running in Windows is fine) - all you need is a dedicated ANT+ USB stick.
