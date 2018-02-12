@@ -5,8 +5,9 @@
 This project implements "virtual power" for bicycle turbo trainers where the trainer or the attached bike has an ANT+ 
 speed sensor. The calculated power is broadcasted as such on ANT+ so that any head unit or app will see it as a power
 meter. Currently supported trainers are the 
-[Bike Technologies Advanced Training System (BT-ATS)](http://www.biketechnologies.com/bt-advanced-training-system/) 
-and the [Kurt Kinetic range of fluid trainers](https://kurtkinetic.com/products/trainers/). 
+[Bike Technologies Advanced Training System (BT-ATS)](http://www.biketechnologies.com/bt-advanced-training-system/),
+the [Kurt Kinetic range of fluid trainers](https://kurtkinetic.com/products/trainers/) and the
+[Tacx Blue Motion](https://tacx.com/product/blue-motion/).
 
 ![Prototype vPower unit in action on a BT-ATS trainer](https://github.com/dhague/vpower/raw/master/images/vPower%20BT-ATS-small.JPG)
 
