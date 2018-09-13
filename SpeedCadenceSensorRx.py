@@ -20,7 +20,7 @@ class SpeedCadenceSensorRx(event.EventCallback):
         self.channel = antnode.getFreeChannel()
         self.channel.name = 'C:SPEED'
         self.channel.assign('N:ANT+', CHANNEL_TYPE_TWOWAY_RECEIVE)
-        self.channel.setID(sensor_type, sensor_id, 1)
+        self.channel.setID(sensor_type, sensor_id, 0)
         self.channel.setSearchTimeout(TIMEOUT_NEVER)
         if sensor_type == SPEED_DEVICE_TYPE:
             period = 8118
