@@ -1,4 +1,4 @@
-from ConfigParser import ConfigParser
+from configparser import ConfigParser
 
 import sys
 from ant.core import log
@@ -19,14 +19,14 @@ if len(sys.argv) > 1:
 SECTION = 'vpower'
 
 try:
-    if VPOWER_DEBUG: print 'Open file ' + _CONFIG_FILENAME
-    file = open(_CONFIG_FILENAME, 'rb')
-    if VPOWER_DEBUG: print 'Parse config'
-    CONFIG.readfp(file)
+    if VPOWER_DEBUG:
+        print('Open file ' + _CONFIG_FILENAME)
+        print('Parse config')
+    CONFIG.read(_CONFIG_FILENAME)
 except Exception as e:
-    print "Error: "+repr(e.__class__)
+    print("Error: "+repr(e.__class__))
 
-if VPOWER_DEBUG: print 'Get config items'
+if VPOWER_DEBUG: print('Get config items')
 
 # Type of sensor connected to the trainer
 SENSOR_TYPE = CONFIG.getint(SECTION, 'speed_sensor_type')
@@ -52,7 +52,7 @@ POWER_CALCULATOR.set_correction_factor(CONFIG.getfloat(SECTION, 'correction_fact
 
 # ANT+ ID of the virtual power sensor
 # The expression below will choose a fixed ID based on the CPU's serial number
-POWER_SENSOR_ID = int(int(hashlib.md5(getserial()).hexdigest(), 16) & 0xfffe) + 1
+POWER_SENSOR_ID = int(int(hashlib.md5(getserial().encode()).hexdigest(), 16) & 0xfffe) + 1
 
 # If set to True, the stick's driver will dump everything it reads/writes from/to the stick.
 DEBUG = CONFIG.getboolean(SECTION, 'debug')
@@ -64,8 +64,8 @@ LOG = None
 # LOG = log.LogWriter(filename="vpower.log")
 
 # ANT+ network key
-NETKEY = '\xB9\xA5\x21\xFB\xBD\x72\xC3\x45'
+NETKEY = b'\xB9\xA5\x21\xFB\xBD\x72\xC3\x45'
 
 if LOG:
-    print "Using log file:", LOG.filename
-    print ""
+    print("Using log file:", LOG.filename)
+    print("")
