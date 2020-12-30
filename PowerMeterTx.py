@@ -63,7 +63,6 @@ class PowerMeterTx(object):
         payload.append(self.powerData.instantaneousPower >> 8)
 
         ant_msg = message.ChannelBroadcastDataMessage(self.channel.number, data=payload)
-        sys.stdout.write('+')
-        sys.stdout.flush()
+        print(f'Power: {int(power)} W   \r', end="")
         if VPOWER_DEBUG: print('Write message to ANT stick on channel ' + repr(self.channel.number))
         self.antnode.send(ant_msg)

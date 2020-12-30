@@ -17,15 +17,22 @@ power_meter = None
 try:
     print("Using " + POWER_CALCULATOR.__class__.__name__)
 
-    devs = find(find_all=True)
+    devs = find(find_all=True, idVendor=0x0fcf)
     for dev in devs:
-        if dev.idVendor == 0x0fcf and dev.idProduct in [0x1008, 0x1009]:
+        if dev.idProduct in [0x1008, 0x1009]:
+            # If running on the same PC as the receiver app (with two identical sticks)
+            # the first stick may be already claimed, so continue trying
+            stick = driver.USB2Driver(log=LOG, debug=DEBUG, idProduct=dev.idProduct, bus=dev.bus, address=dev.address)
+            try:
+                stick.open()
+            except:
+                continue
+            stick.close()
             break
     else:
-        print("No ANT device found")
+        print("No ANT devices available")
         exit()
 
-    stick = driver.USB2Driver(log=LOG, debug=DEBUG, idProduct=dev.idProduct)
     antnode = node.Node(stick)
     print("Starting ANT node")
     antnode.start()
@@ -55,9 +62,27 @@ try:
     # Notify the power meter every time we get a calculated power value
     POWER_CALCULATOR.notify_change(power_meter)
 
+    stopped = True
+    last_time = 0
+    last_update = 0
     print("Main wait loop")
     while True:
         try:
+            # Some apps keep the last received power value if the sensor stops broadcasting
+            # and some drop the power to zero if the interval between updates is > 1 second
+            if not stopped:
+                t = int(time.time())
+                if t >= last_update + 3:
+                    if speed_sensor.currentData.speedEventTime == last_time:
+                        # Set power to zero if speed sensor doesn't update for 3 seconds
+                        power_meter.powerData.instantaneousPower = 0
+                        stopped = True
+                    last_time = speed_sensor.currentData.speedEventTime
+                    last_update = t
+                # Force an update every second to avoid power drops
+                power_meter.update(power_meter.powerData.instantaneousPower)
+            elif power_meter.powerData.instantaneousPower:
+                stopped = False
             time.sleep(1)
         except (KeyboardInterrupt, SystemExit):
             break
