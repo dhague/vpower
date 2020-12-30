@@ -9,7 +9,7 @@ from CycleOpsFluid2PowerCalculator import CycleOpsFluid2PowerCalculator
 from constants import *
 import hashlib
 
-VPOWER_DEBUG = True
+VPOWER_DEBUG = False
 
 CONFIG = ConfigParser()
 _CONFIG_FILENAME = 'vpower.cfg'
