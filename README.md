@@ -154,6 +154,6 @@ You can turn on DEBUG/diagnostic output by setting `debug` to `True` in `vpower.
 
 1. Install the libusb-win32 driver for the ANT stick, it can be easily done using [Zadig](https://zadig.akeo.ie/).
 
-2. Install dependencies:
+2. Install pywin32 (optional, stops the ANT node on terminal window close):
 
-    `pip install configparser pywin32`
+    `pip install pywin32`
