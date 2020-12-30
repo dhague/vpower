@@ -129,9 +129,9 @@ You should see something like this:
     Using KurtKineticPowerCalculator
     Starting power meter
     Main wait loop
-    +++++
+    Power: x W
 
-Each `+` corresponds to a power message being sent, so these will only appear once you start pedalling.
+The `x` corresponds to the power value in the message being sent, so it will only appear once you start pedalling.
 If you have a BME280 sensor attached then you will also see some data on temperature, pressure, humidity and air density
 and a `o` will occasionally appear when the air density is updated.
 
