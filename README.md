@@ -35,7 +35,7 @@ or more.
 ![vPower unit with air density sensor](https://github.com/dhague/vpower/raw/master/images/vPowerPiZeroCase.JPG)
 
 If you're not bothered about the air density correction then you don't even need a Raspberry Pi - any computer running
-Linux will do (even a virtual machine running in Windows is fine) - all you need is a dedicated ANT+ USB stick.
+Linux or Windows will do - all you need is a dedicated ANT+ USB stick.
 
 The plan is to enhance the project further so that accelerations/decelerations can be factored in, increasing the 
 accuracy in the sub-10 second range and making the project useful for calculating sprint power.
