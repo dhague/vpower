@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import time
+import platform
 
 from ant.core import driver
 from ant.core import node
@@ -13,6 +14,30 @@ from config import DEBUG, LOG, NETKEY, POWER_CALCULATOR, POWER_SENSOR_ID, SENSOR
 antnode = None
 speed_sensor = None
 power_meter = None
+
+def stop_ant():
+    if speed_sensor:
+        print("Closing speed sensor")
+        speed_sensor.close()
+        speed_sensor.unassign()
+    if power_meter:
+        print("Closing power meter")
+        power_meter.close()
+        power_meter.unassign()
+    if antnode:
+        print("Stopping ANT node")
+        antnode.stop()
+
+pywin32 = False
+if platform.system() == 'Windows':
+    def on_exit(sig, func=None):
+        stop_ant()
+    try:
+        import win32api
+        win32api.SetConsoleCtrlHandler(on_exit, True)
+        pywin32 = True
+    except ImportError:
+        print("Warning: pywin32 is not installed, use Ctrl+C to stop")
 
 try:
     print("Using " + POWER_CALCULATOR.__class__.__name__)
@@ -90,14 +115,5 @@ try:
 except Exception as e:
     print("Exception: " + repr(e))
 finally:
-    if speed_sensor:
-        print("Closing speed sensor")
-        speed_sensor.close()
-        speed_sensor.unassign()
-    if power_meter:
-        print("Closing power meter")
-        power_meter.close()
-        power_meter.unassign()
-    if antnode:
-        print("Stopping ANT node")
-        antnode.stop()
+    if not pywin32:
+        stop_ant()

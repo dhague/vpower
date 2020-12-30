@@ -149,3 +149,11 @@ You can turn on DEBUG/diagnostic output by setting `debug` to `True` in `vpower.
 2. Configure the service to start at boot time:
 
     `sudo update-rc.d vpower defaults`
+
+## Running on Windows
+
+1. Install the libusb-win32 driver for the ANT stick, it can be easily done using [Zadig](https://zadig.akeo.ie/).
+
+2. Install dependencies:
+
+    `pip install configparser pywin32`
