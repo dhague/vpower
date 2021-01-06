@@ -6,6 +6,8 @@ from BtAtsPowerCalculator import BtAtsPowerCalculator
 from KurtKineticPowerCalculator import KurtKineticPowerCalculator
 from TacxBlueMotionPowerCalculator import TacxBlueMotionPowerCalculator
 from CycleOpsFluid2PowerCalculator import CycleOpsFluid2PowerCalculator
+from EliteNovoForcePowerCalculator import EliteNovoForcePowerCalculator
+from LinearInterpolationPowerCalculator import LinearInterpolationPowerCalculator
 from constants import *
 import hashlib
 
