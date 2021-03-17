@@ -1,9 +1,8 @@
-from ant.core import event
-from ant.core import message
+from ant.core import event, message, node
 from ant.core.constants import *
 
 from constants import *
-from config import VPOWER_DEBUG
+from config import NETKEY, VPOWER_DEBUG
 
 
 # Receiver for Speed and/or Cadence ANT+ sensor
@@ -19,17 +18,18 @@ class SpeedCadenceSensorRx(event.EventCallback):
         # Get the channel
         self.channel = antnode.getFreeChannel()
         self.channel.name = 'C:SPEED'
-        self.channel.assign('N:ANT+', CHANNEL_TYPE_TWOWAY_RECEIVE)
-        self.channel.setID(sensor_type, sensor_id, 1)
-        self.channel.setSearchTimeout(TIMEOUT_NEVER)
+        network = node.Network(NETKEY, 'N:ANT+')
+        self.channel.assign(network, CHANNEL_TYPE_TWOWAY_RECEIVE)
+        self.channel.setID(sensor_type, sensor_id, 0)
+        self.channel.searchTimeout = TIMEOUT_NEVER
         if sensor_type == SPEED_DEVICE_TYPE:
             period = 8118
         elif sensor_type == CADENCE_DEVICE_TYPE:
             period = 8102
         elif sensor_type == SPEED_CADENCE_DEVICE_TYPE:
             period = 8086
-        self.channel.setPeriod(period)
-        self.channel.setFrequency(57)
+        self.channel.period = period
+        self.channel.frequency = 57
 
     def set_revs_per_sec(self, rps):
         self.revsPerSec = rps
@@ -56,7 +56,7 @@ class SpeedCadenceSensorRx(event.EventCallback):
         # TODO
         return False
 
-    def process(self, msg):
+    def process(self, msg, channel):
         if isinstance(msg, message.ChannelBroadcastDataMessage):
             dp = None
             # Get the datapage according to the configured device type
@@ -71,7 +71,7 @@ class SpeedCadenceSensorRx(event.EventCallback):
 
             # Parse the incoming message into a SpeedCadenceData object
             message_data = SpeedCadenceData()
-            dp.parse(msg.getPayload(), message_data)
+            dp.parse(msg.data, message_data)
 
             if VPOWER_DEBUG: message_data.print_speed()
 
@@ -96,7 +96,7 @@ class SpeedCadenceSensorRx(event.EventCallback):
                     self.set_revs_per_sec(revs_diff / time_diff)
 
         elif isinstance(msg, message.ChannelStatusMessage):
-            if msg.getStatus() == EVENT_CHANNEL_CLOSED:
+            if msg.status == EVENT_CHANNEL_CLOSED:
                 # Channel closed, re-open
                 open()
 
@@ -109,22 +109,22 @@ class SpeedCadenceData:
         self.cadenceEventTime = None
 
     def print_speed(self):
-        print 'speedRevCount: ', self.speedRevCount
-        print 'speedEventTime: ', self.speedEventTime
+        print('speedRevCount: ', self.speedRevCount)
+        print('speedEventTime: ', self.speedEventTime)
 
     def print_cadence(self):
-        print 'cadenceRevCount: ', self.cadenceRevCount
-        print 'cadenceEventTime: ', self.cadenceEventTime
+        print('cadenceRevCount: ', self.cadenceRevCount)
+        print('cadenceEventTime: ', self.cadenceEventTime)
 
 
 class DataPage(object):
     @staticmethod
     def parse_event_time(payload, offset):
-        return (ord(payload[offset+1]) | (ord(payload[offset + 2]) << 8)) / 1024.0
+        return (payload[offset] | (payload[offset + 1] << 8)) / 1024.0
 
     @staticmethod
     def parse_rev_count(payload, offset):
-        return ord(payload[offset+1]) | (ord(payload[offset + 2]) << 8)
+        return payload[offset] | (payload[offset + 1] << 8)
 
 
 class SpeedDataPage(DataPage):
