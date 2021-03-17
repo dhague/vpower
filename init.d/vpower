@@ -29,7 +29,7 @@ PIDFILE=/var/run/$DAEMON_NAME.pid
 
 do_start () {
     (ifconfig | grep HWaddr) && log_daemon_msg "Attempt to install requirements for $DAEMON_NAME daemon" \
-        && pip install -r $DIR/requirements.txt
+        && pip3 install -r $DIR/requirements.txt
     log_daemon_msg "Starting system $DAEMON_NAME daemon"
     start-stop-daemon --start --background --no-close --pidfile $PIDFILE --make-pidfile --user $DAEMON_USER \
         --chuid $DAEMON_USER --startas $DAEMON -- $DAEMON_OPTS

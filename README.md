@@ -80,7 +80,7 @@ and under $15 for the USB hub/ethernet adaptor to be able to build it :-)
     cd /boot
     sudo git clone https://github.com/dhague/vpower.git
     cd vpower
-    sudo pip install -r requirements.txt
+    sudo pip3 install -r requirements.txt
 
 3b. Download the zip file from the "Clone or download" button above and extract it to the microSD card so that the `vpower` folder
     contains the files from the repo.
@@ -96,22 +96,18 @@ exertion.
 
 ## [optional] Setting up air density correction using a [BME280 sensor](https://www.google.co.uk/search?q=bme280+sensor)
 
-This is just a matter of downloading and setting up the BME280 Python module.
+This is just a matter of setting up the BME280 Python module.
 
-1. From the *parent* of the vpower folder (e.g. `/boot`), run:
+1. Copy `bme280.py` to the *parent* of the vpower folder (e.g. `/boot`).
 
-    `wget https://bitbucket.org/MattHawkinsUK/rpispy-misc/raw/master/python/bme280.py`
-
-Alternatively (if using option 3b above), download the file from 
-[here](https://bitbucket.org/MattHawkinsUK/rpispy-misc/raw/master/python/bme280.py) 
-and put it in the root of the microSD card.
+Alternatively (if using option 3b above), copy the file to the root of the microSD card.
 
 2. On the Pi, run `sudo i2cdetect -y 1`
 
     if 77 is shown in the output grid, then edit `bme280.py` and change `0x76` to `0x77`
-    (at line 27 or thereabouts)
+    (at line 27)
 
-3. Running `python bme280.py` should output the chip's data and the current temperature, pressure & humidity
+3. Running `python3 bme280.py` should output the chip's data and the current temperature, pressure & humidity
 
 ## Running the virtual power meter (manual)
 
@@ -119,7 +115,7 @@ and put it in the root of the microSD card.
 
 2. `cd /boot/vpower`
 
-3. `sudo python vpower.py ../vpower.cfg`
+3. `sudo python3 vpower.py ../vpower.cfg`
 
 You should see something like this:
 
