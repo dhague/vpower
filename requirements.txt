@@ -1,1 +1,1 @@
-git+https://github.com/baderj/python-ant.git
+git+https://github.com/mch/python-ant.git

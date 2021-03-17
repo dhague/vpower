@@ -17,7 +17,7 @@ class BtAtsPowerCalculator(AbstractPowerCalculator):
         self.dynamic_air_density = None
 
     def check_for_bme280_sensor(self):
-        print "Check for temperature/pressure/humidity sensor"
+        print("Check for temperature/pressure/humidity sensor")
         try:
             import os, sys
             sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -25,14 +25,14 @@ class BtAtsPowerCalculator(AbstractPowerCalculator):
             import bme280
             bme280.readBME280All()  # The first reading after boot-up can be off, so throw it away
             temperature, pressure, humidity = bme280.readBME280All()
-            print "Temp (C): " + repr(temperature)
-            print "Pressure: " + repr(pressure)
-            print "Humidity: " + repr(humidity)
-            print "Air density: " + repr(self.calc_air_density(temperature, pressure, humidity))
+            print("Temp (C): " + repr(temperature))
+            print("Pressure: " + repr(pressure))
+            print("Humidity: " + repr(humidity))
+            print("Air density: " + repr(self.calc_air_density(temperature, pressure, humidity)))
             self.dynamic_air_density = True
         except (ImportError, IOError) as e:
             self.dynamic_air_density = False
-            print "Not found"
+            print("Not found")
 
     A = 0.290390167
     B = -0.0461311774
@@ -44,7 +44,7 @@ class BtAtsPowerCalculator(AbstractPowerCalculator):
     #  Power = A * v ^ 3 + B * v ^ 2 + C * v + d
     # where v is speed in revs / sec and constants A, B, C & D are as defined above.
     def power_from_speed(self, revs_per_sec):
-        if self._DEBUG: print "power_from_speed"
+        if self._DEBUG: print("power_from_speed")
 
         if self.dynamic_air_density is None:
             self.check_for_bme280_sensor()
@@ -54,12 +54,12 @@ class BtAtsPowerCalculator(AbstractPowerCalculator):
             import bme280
             temperature, pressure, humidity = bme280.readBME280All()
             if self._DEBUG:
-                print "Temp (C): " + repr(temperature)
-                print "Pressure: " + repr(pressure)
-                print "Humidity: " + repr(humidity)
+                print("Temp (C): " + repr(temperature))
+                print("Pressure: " + repr(pressure))
+                print("Humidity: " + repr(humidity))
             self.update_air_density(temperature, pressure, humidity)
 
-        if self._DEBUG: print "air_density_correction: " + repr(self.air_density_correction)
+        if self._DEBUG: print("air_density_correction: " + repr(self.air_density_correction))
         rs = revs_per_sec
         power = self.correction_factor * (self.A * rs * rs * rs * self.air_density_correction +
                                           self.B * rs * rs +
@@ -73,7 +73,7 @@ class BtAtsPowerCalculator(AbstractPowerCalculator):
     @staticmethod
     def calc_air_density(t, p, h):
         _DEBUG = BtAtsPowerCalculator._DEBUG
-        if _DEBUG: print "set_air_density(temp=" + repr(t) + ", press=" + repr(p) + ", humi=" + repr(h) + ")"
+        if _DEBUG: print("set_air_density(temp=" + repr(t) + ", press=" + repr(p) + ", humi=" + repr(h) + ")")
         Rd = 287.05  # Specific gas constant for dry air J / (KgK)
         Rv = 461.495  # Specific gas constant for water vapour J / (KgK)
         water_vapour_pressure = BtAtsPowerCalculator.saturation_pressure(t) * h / 100.0

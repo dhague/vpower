@@ -35,7 +35,7 @@ or more.
 ![vPower unit with air density sensor](https://github.com/dhague/vpower/raw/master/images/vPowerPiZeroCase.JPG)
 
 If you're not bothered about the air density correction then you don't even need a Raspberry Pi - any computer running
-Linux will do (even a virtual machine running in Windows is fine) - all you need is a dedicated ANT+ USB stick.
+Linux or Windows will do - all you need is a dedicated ANT+ USB stick.
 
 The plan is to enhance the project further so that accelerations/decelerations can be factored in, increasing the 
 accuracy in the sub-10 second range and making the project useful for calculating sprint power.
@@ -129,9 +129,9 @@ You should see something like this:
     Using KurtKineticPowerCalculator
     Starting power meter
     Main wait loop
-    +++++
+    Power: x W
 
-Each `+` corresponds to a power message being sent, so these will only appear once you start pedalling.
+The `x` corresponds to the power value in the message being sent, so it will only appear once you start pedalling.
 If you have a BME280 sensor attached then you will also see some data on temperature, pressure, humidity and air density
 and a `o` will occasionally appear when the air density is updated.
 
@@ -149,3 +149,15 @@ You can turn on DEBUG/diagnostic output by setting `debug` to `True` in `vpower.
 2. Configure the service to start at boot time:
 
     `sudo update-rc.d vpower defaults`
+
+## Running on Windows
+
+1. Install the libusb-win32 driver for the ANT stick, it can be easily done using [Zadig](https://zadig.akeo.ie/).
+
+2. Clone or download this repo and install the required Python libraries:
+
+    `pip install -r requirements.txt`
+
+3. [optional] Install pywin32 (to stop the ANT node on terminal window close):
+
+    `pip install pywin32`
